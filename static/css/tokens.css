@@ -1,0 +1,83 @@
+/* ============================================================
+   1409 SDK — Design Tokens
+   Источник: портал 1409 / apps4.html
+   ============================================================ */
+
+:root {
+    /* surfaces */
+    --bg-primary: #000000;
+    --bg-secondary: rgba(255, 255, 255, 0.08);
+    --bg-tertiary: rgba(255, 255, 255, 0.06);
+    --bg-hover: rgba(255, 255, 255, 0.12);
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --card-bg: linear-gradient(135deg, rgba(28, 42, 93, 0.8) 0%, rgba(10, 17, 42, 0.8) 100%);
+    --card-solid: rgba(255, 255, 255, 0.08);
+    --card-soft: rgba(255, 255, 255, 0.06);
+    --card-hover: rgba(255, 255, 255, 0.12);
+
+    /* text */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+
+    /* borders */
+    --border-color: rgba(255, 255, 255, 0.12);
+    --border-light: rgba(255, 255, 255, 0.15);
+
+    /* feedback */
+    --accent: #4446E1;
+    --accent-soft: rgba(68, 70, 225, 0.18);
+    --ok-color: #4ade80;
+    --err-color: #f87171;
+    --warn-color: #f5a524;
+
+    /* shadows */
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --handle-bg: rgba(255, 255, 255, 0.22);
+
+    /* clouds */
+    --cloud1-color1: rgba(68, 70, 225, 0.4);
+    --cloud1-color2: rgba(220, 53, 69, 0.35);
+    --cloud2-color1: rgba(100, 102, 255, 0.3);
+    --cloud2-color2: rgba(255, 80, 100, 0.25);
+
+    /* geometry */
+    --radius-lg: 26px;
+    --radius-md: 18px;
+    --radius-sm: 14px;
+    --radius-pill: 999px;
+}
+
+[data-theme="light"] {
+    --bg-primary: #f5f7fa;
+    --bg-secondary: rgba(255, 255, 255, 0.9);
+    --bg-tertiary: rgba(255, 255, 255, 0.95);
+    --bg-hover: rgba(255, 255, 255, 1);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --card-bg: linear-gradient(135deg, rgba(68, 70, 225, 0.15) 0%, rgba(100, 102, 255, 0.08) 100%);
+    --card-solid: rgba(255, 255, 255, 0.85);
+    --card-soft: rgba(255, 255, 255, 0.7);
+    --card-hover: rgba(255, 255, 255, 0.95);
+
+    --text-primary: #1a1a2e;
+    --text-secondary: rgba(26, 26, 46, 0.7);
+    --text-muted: rgba(26, 26, 46, 0.5);
+
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-light: rgba(0, 0, 0, 0.1);
+
+    --ok-color: #1c7a52;
+    --err-color: #c0392b;
+
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --handle-bg: rgba(0, 0, 0, 0.15);
+
+    --cloud1-color1: rgba(68, 70, 225, 0.8);
+    --cloud1-color2: rgba(220, 53, 69, 0.75);
+    --cloud2-color1: rgba(100, 102, 255, 0.7);
+    --cloud2-color2: rgba(255, 80, 100, 0.65);
+}

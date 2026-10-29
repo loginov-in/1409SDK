@@ -5,80 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>1409 SDK — Вход в панель управления</title>
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
     <link rel="icon" href="/static/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* ─── TOKENS ─── */
+        /* ─── TOKENS (1409 Portal / apps4) ─── */
         :root {
-            --bg:          #09090b;
-            --s1:          #111116;
-            --s2:          rgba(255,255,255,0.03);
-            --s3:          rgba(255,255,255,0.06);
-            --border:      rgba(255,255,255,0.07);
-            --border2:     rgba(255,255,255,0.14);
-            --accent:      #6366f1;
-            --accent-hi:   #818cf8;
-            --accent-dim:  rgba(99,102,241,0.15);
-            --red:         #e63530;
-            --green:       #17c964;
+            --bg:          #000000;
+            --s1:          rgba(255,255,255,0.06);
+            --s2:          rgba(255,255,255,0.08);
+            --s3:          rgba(255,255,255,0.12);
+            --border:      rgba(255,255,255,0.12);
+            --border2:     rgba(255,255,255,0.2);
+            --accent:      #4446E1;
+            --accent-hi:   #8f91ff;
+            --accent-dim:  rgba(68,70,225,0.18);
+            --red:         #DC3545;
+            --green:       #4ade80;
             --yellow:      #f5a524;
-            --t1:          #ecedee;
-            --t2:          #9ba1a6;
-            --t3:          rgba(255,255,255,0.32);
-            --radius:      16px;
+            --t1:          #ffffff;
+            --t2:          rgba(255,255,255,0.7);
+            --t3:          rgba(255,255,255,0.5);
+            --glass:       rgba(255,255,255,0.08);
+            --glass-border:rgba(255,255,255,0.2);
+            --cloud-a:     rgba(68,70,225,0.4);
+            --cloud-b:     rgba(220,53,69,0.35);
+            --cloud-c:     rgba(100,102,255,0.3);
+            --cloud-d:     rgba(255,80,100,0.25);
+            --radius:      26px;
+            --radius-md:   18px;
+            --radius-sm:   14px;
             --ease:        cubic-bezier(0.22, 1, 0.36, 1);
             --spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
+        [data-theme="light"] {
+            --bg:          #f5f7fa;
+            --s1:          rgba(255,255,255,0.9);
+            --s2:          rgba(255,255,255,0.85);
+            --s3:          rgba(255,255,255,1);
+            --border:      rgba(0,0,0,0.08);
+            --border2:     rgba(0,0,0,0.1);
+            --accent:      #4446E1;
+            --accent-hi:   #4446E1;
+            --accent-dim:  rgba(68,70,225,0.12);
+            --red:         #c0392b;
+            --green:       #1c7a52;
+            --t1:          #1a1a2e;
+            --t2:          rgba(26,26,46,0.7);
+            --t3:          rgba(26,26,46,0.5);
+            --glass:       rgba(255,255,255,0.7);
+            --glass-border:rgba(0,0,0,0.1);
+            --cloud-a:     rgba(68,70,225,0.8);
+            --cloud-b:     rgba(220,53,69,0.75);
+            --cloud-c:     rgba(100,102,255,0.7);
+            --cloud-d:     rgba(255,80,100,0.65);
+        }
+
         *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-        ::selection { background: rgba(99,102,241,0.35); color:#fff; }
+        ::selection { background: rgba(68,70,225,0.35); color:#fff; }
 
         html, body { height: 100%; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             color: var(--t1);
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* ─── AMBIENT ─── */
+        /* ─── AMBIENT CLOUDS (apps4) ─── */
         .ambient {
-            position: fixed; inset: 0;
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
             pointer-events: none;
-            overflow: hidden;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 30% 20%, var(--cloud-a) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 50% at 70% 30%, var(--cloud-b) 0%, transparent 50%);
+            animation: cloudFloat 20s ease-in-out infinite;
+            transition: background 0.3s ease;
         }
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            opacity: 0.5;
-            will-change: transform;
+        .ambient::after {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 50% 40% at 60% 25%, var(--cloud-c) 0%, transparent 45%),
+                radial-gradient(ellipse 40% 35% at 40% 35%, var(--cloud-d) 0%, transparent 40%);
+            animation: cloudFloat2 25s ease-in-out infinite reverse;
         }
-        .blob-1 {
-            width: 560px; height: 560px;
-            top: -180px; left: -120px;
-            background: radial-gradient(circle, rgba(99,102,241,0.55), transparent 65%);
-            animation: drift1 22s ease-in-out infinite alternate;
+        .blob { display: none; }
+        @keyframes cloudFloat {
+            0%,100% { transform: translate(0,0) scale(1); }
+            25% { transform: translate(5%,3%) scale(1.05); }
+            50% { transform: translate(-3%,5%) scale(0.98); }
+            75% { transform: translate(-5%,-2%) scale(1.02); }
         }
-        .blob-2 {
-            width: 480px; height: 480px;
-            bottom: -200px; right: -100px;
-            background: radial-gradient(circle, rgba(230,53,48,0.42), transparent 65%);
-            animation: drift2 26s ease-in-out infinite alternate;
+        @keyframes cloudFloat2 {
+            0%,100% { transform: translate(0,0) rotate(0deg); }
+            33% { transform: translate(-4%,4%) rotate(2deg); }
+            66% { transform: translate(4%,-3%) rotate(-2deg); }
         }
-        .blob-3 {
-            width: 360px; height: 360px;
-            top: 45%; left: 42%;
-            background: radial-gradient(circle, rgba(23,201,100,0.16), transparent 65%);
-            animation: drift3 30s ease-in-out infinite alternate;
-        }
-        @keyframes drift1 { to { transform: translate(90px, 70px) scale(1.12); } }
-        @keyframes drift2 { to { transform: translate(-70px, -60px) scale(1.08); } }
-        @keyframes drift3 { to { transform: translate(-50px, 40px) scale(0.9); } }
 
         .grid-overlay {
             position: fixed; inset: 0;
@@ -90,6 +127,7 @@
             mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, #000 30%, transparent 78%);
             -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 40%, #000 30%, transparent 78%);
         }
+        [data-theme="light"] .grid-overlay { opacity: 0.5; }
         .noise {
             position: fixed; inset: 0;
             pointer-events: none;
@@ -122,7 +160,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 70% 50% at 20% 0%, rgba(99,102,241,0.08), transparent 70%);
+            background: radial-gradient(ellipse 70% 50% at 20% 0%, rgba(68,70,225,0.08), transparent 70%);
             pointer-events: none;
         }
 
@@ -133,11 +171,11 @@
         .brand-logo {
             width: 42px; height: 42px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #4446E1 0%, #6366f1 45%, #e63530 100%);
+            background: linear-gradient(135deg, #4446E1 0%, #4446E1 45%, #DC3545 100%);
             display: grid; place-items: center;
             font-size: 0.72rem; font-weight: 900; letter-spacing: 0.5px;
             color: #fff;
-            box-shadow: 0 10px 30px rgba(99,102,241,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+            box-shadow: 0 10px 30px rgba(68,70,225,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
             position: relative;
             overflow: hidden;
         }
@@ -157,7 +195,7 @@
         .brand-badge {
             font-size: 0.56rem; font-weight: 800; letter-spacing: 1.4px;
             background: var(--accent-dim); color: var(--accent-hi);
-            border: 1px solid rgba(99,102,241,0.28);
+            border: 1px solid rgba(68,70,225,0.28);
             padding: 3px 8px; border-radius: 999px;
         }
 
@@ -170,8 +208,8 @@
             display: inline-flex; align-items: center; gap: 8px;
             font-size: 0.66rem; font-weight: 700; letter-spacing: 2px;
             text-transform: uppercase; color: var(--accent-hi);
-            background: rgba(99,102,241,0.08);
-            border: 1px solid rgba(99,102,241,0.2);
+            background: rgba(68,70,225,0.08);
+            border: 1px solid rgba(68,70,225,0.2);
             padding: 6px 12px; border-radius: 999px;
             margin-bottom: 20px;
         }
@@ -190,7 +228,7 @@
             letter-spacing: -1.6px;
         }
         .grad {
-            background: linear-gradient(100deg, #a5b4fc 0%, #818cf8 40%, #f87171 100%);
+            background: linear-gradient(100deg, #a5b4fc 0%, #8f91ff 40%, #f87171 100%);
             -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200% auto;
@@ -254,7 +292,7 @@
             background: rgba(255,255,255,0.06);
         }
         .mini-nav.on {
-            background: linear-gradient(90deg, rgba(99,102,241,0.55), rgba(99,102,241,0.18));
+            background: linear-gradient(90deg, rgba(68,70,225,0.55), rgba(68,70,225,0.18));
             width: 82%;
         }
         .mini-main { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -283,8 +321,8 @@
         .mini-chip {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.56rem; color: var(--accent-hi);
-            background: rgba(99,102,241,0.1);
-            border: 1px solid rgba(99,102,241,0.22);
+            background: rgba(68,70,225,0.1);
+            border: 1px solid rgba(68,70,225,0.22);
             padding: 3px 8px; border-radius: 6px;
         }
 
@@ -313,12 +351,12 @@
         .card {
             width: min(100%, 404px);
             position: relative;
-            background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018));
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.1) 100%);
             border: 1px solid var(--border2);
-            border-radius: 22px;
+            border-radius: 26px;
             padding: 34px 32px 28px;
-            backdrop-filter: blur(28px) saturate(140%);
-            -webkit-backdrop-filter: blur(28px) saturate(140%);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
             box-shadow:
                 0 40px 90px rgba(0,0,0,0.55),
                 inset 0 1px 0 rgba(255,255,255,0.09);
@@ -333,7 +371,7 @@
             position: absolute; inset: -1px;
             border-radius: 23px;
             padding: 1px;
-            background: linear-gradient(140deg, rgba(129,140,248,0.5), transparent 35%, transparent 65%, rgba(230,53,48,0.35));
+            background: linear-gradient(140deg, rgba(129,140,248,0.5), transparent 35%, transparent 65%, rgba(220,53,69,0.35));
             -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
@@ -351,19 +389,19 @@
         .lock {
             width: 46px; height: 46px;
             border-radius: 13px;
-            background: linear-gradient(150deg, rgba(99,102,241,0.28), rgba(99,102,241,0.06));
-            border: 1px solid rgba(99,102,241,0.32);
+            background: linear-gradient(150deg, rgba(68,70,225,0.28), rgba(68,70,225,0.06));
+            border: 1px solid rgba(68,70,225,0.32);
             display: grid; place-items: center;
             color: var(--accent-hi);
             margin-bottom: 18px;
-            box-shadow: 0 8px 24px rgba(99,102,241,0.22), inset 0 1px 0 rgba(255,255,255,0.12);
+            box-shadow: 0 8px 24px rgba(68,70,225,0.22), inset 0 1px 0 rgba(255,255,255,0.12);
             position: relative;
         }
         .lock::after {
             content: '';
             position: absolute; inset: -5px;
             border-radius: 17px;
-            border: 1px solid rgba(99,102,241,0.18);
+            border: 1px solid rgba(68,70,225,0.18);
             animation: lockPulse 3.2s ease-out infinite;
         }
         @keyframes lockPulse {
@@ -386,8 +424,8 @@
             display: flex; align-items: flex-start; gap: 9px;
             margin-top: 18px;
             padding: 11px 13px;
-            background: rgba(230,53,48,0.09);
-            border: 1px solid rgba(230,53,48,0.28);
+            background: rgba(220,53,69,0.09);
+            border: 1px solid rgba(220,53,69,0.28);
             border-radius: 11px;
             font-size: 0.76rem; line-height: 1.4;
             color: #fca5a5;
@@ -408,18 +446,18 @@
 
         .control {
             display: flex; align-items: center; gap: 10px;
-            background: rgba(0,0,0,0.28);
+            background: var(--s2);
             border: 1px solid var(--border2);
-            border-radius: 11px;
-            padding: 0 13px;
-            height: 46px;
+            border-radius: 999px;
+            padding: 0 18px;
+            height: 50px;
             transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
             position: relative;
         }
         .control:focus-within {
-            border-color: rgba(99,102,241,0.65);
-            background: rgba(99,102,241,0.055);
-            box-shadow: 0 0 0 4px rgba(99,102,241,0.1);
+            border-color: rgba(68,70,225,0.65);
+            background: rgba(68,70,225,0.055);
+            box-shadow: 0 0 0 4px rgba(68,70,225,0.1);
         }
         .control svg { color: var(--t3); flex-shrink: 0; transition: color 0.2s; }
         .control:focus-within svg { color: var(--accent-hi); }
@@ -440,7 +478,7 @@
             caret-color: var(--t1);
             transition: background-color 9999s ease-out;
         }
-        .control.invalid { border-color: rgba(230,53,48,0.5); }
+        .control.invalid { border-color: rgba(220,53,69,0.5); }
 
         .eye {
             background: none; border: none; cursor: pointer;
@@ -472,7 +510,7 @@
         .checkbox input:checked {
             background: var(--accent);
             border-color: var(--accent);
-            box-shadow: 0 0 10px rgba(99,102,241,0.4);
+            box-shadow: 0 0 10px rgba(68,70,225,0.4);
         }
         .checkbox input:checked::after {
             content: '';
@@ -498,25 +536,25 @@
             margin-top: 3px;
             position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center; gap: 9px;
-            height: 47px;
-            border: none; border-radius: 12px;
-            background: linear-gradient(135deg, #4f52e8 0%, #6366f1 45%, #7c5ce6 100%);
+            height: 50px;
+            border: none; border-radius: 999px;
+            background: linear-gradient(135deg, #4f52e8 0%, #4446E1 45%, #7c5ce6 100%);
             background-size: 180% 180%;
             color: #fff;
             font-family: inherit;
             font-size: 0.86rem; font-weight: 700; letter-spacing: 0.2px;
             cursor: pointer;
-            box-shadow: 0 14px 34px rgba(99,102,241,0.38), inset 0 1px 0 rgba(255,255,255,0.25);
+            box-shadow: 0 14px 34px rgba(68,70,225,0.38), inset 0 1px 0 rgba(255,255,255,0.25);
             transition: transform 0.18s var(--spring), box-shadow 0.25s, background-position 0.5s;
             font-variant-numeric: tabular-nums;
         }
         .submit:hover:not(:disabled) {
             transform: translateY(-1px);
-            box-shadow: 0 18px 44px rgba(99,102,241,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+            box-shadow: 0 18px 44px rgba(68,70,225,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
             background-position: 100% 50%;
         }
         .submit:active:not(:disabled) { transform: translateY(0) scale(0.99); }
-        .submit:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(99,102,241,0.3), 0 14px 34px rgba(99,102,241,0.38); }
+        .submit:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(68,70,225,0.3), 0 14px 34px rgba(68,70,225,0.38); }
         .submit:disabled { cursor: wait; opacity: 0.9; }
         .submit::after {
             content: '';
@@ -569,7 +607,7 @@
             position: fixed; bottom: 30px; left: 50%;
             transform: translateX(-50%) translateY(16px);
             background: #1a1a24;
-            border: 1px solid rgba(99,102,241,0.35);
+            border: 1px solid rgba(68,70,225,0.35);
             border-radius: 999px;
             padding: 9px 20px;
             font-size: 0.78rem; font-weight: 600;
@@ -586,6 +624,26 @@
             from { opacity: 0; transform: translateY(14px); }
             to   { opacity: 1; transform: none; }
         }
+
+        /* ─── THEME TOGGLE ─── */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 20;
+            width: 44px; height: 44px;
+            display: grid; place-items: center;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            color: var(--t1);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s var(--spring);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .theme-toggle:hover { background: var(--s3); transform: scale(1.06); }
+        .theme-toggle .icon-sun { display: none; }
+        [data-theme="light"] .theme-toggle .icon-sun { display: block; }
+        [data-theme="light"] .theme-toggle .icon-moon { display: none; }
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 1060px) {
@@ -608,6 +666,11 @@
     </style>
 </head>
 <body>
+
+<button type="button" class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+    <svg class="icon-moon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+</button>
 
 <div class="ambient" aria-hidden="true">
     <div class="blob blob-1"></div>
@@ -637,9 +700,9 @@
         <div class="mini" aria-hidden="true">
             <div class="mini-window">
                 <div class="mini-bar">
-                    <span class="mini-dot" style="background:#e63530;"></span>
+                    <span class="mini-dot" style="background:#DC3545;"></span>
                     <span class="mini-dot" style="background:#f5a524;"></span>
-                    <span class="mini-dot" style="background:#17c964;"></span>
+                    <span class="mini-dot" style="background:#4ade80;"></span>
                     <span class="mini-url">localhost:9350/panel</span>
                 </div>
                 <div class="mini-body">
@@ -783,6 +846,13 @@
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+        const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    });
+
     const form     = document.getElementById('loginForm');
     const loginEl  = document.getElementById('login');
     const passEl   = document.getElementById('password');

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Виджет статуса</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Widgets</span>
+        <h1 class="demo-title">Виджет статуса</h1>
+        <p class="demo-sub">Компактный liquid-glass блок: расписание, погода, уведомления.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Расписание</div>
+        <div class="status-widget">
+            <div class="status-block">
+                <div class="status-main"><i data-lucide="book-open"></i> Математика</div>
+                <div class="status-sub">каб. 204 · 10:15</div>
+            </div>
+            <div class="status-block">
+                <div class="status-main">через 15 мин</div>
+                <div class="status-sub">до начала</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Погода</div>
+        <div class="status-widget">
+            <div class="status-block">
+                <div class="status-main"><i data-lucide="sun"></i> +18°</div>
+                <div class="status-sub">Москва</div>
+            </div>
+            <div class="status-block">
+                <div class="status-main">Ясно</div>
+                <div class="status-sub">ветер 3 м/с</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Уведомления</div>
+        <div class="status-widget">
+            <div class="status-block">
+                <div class="status-main"><i data-lucide="bell"></i> 3 новых</div>
+                <div class="status-sub">заявки на выход</div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

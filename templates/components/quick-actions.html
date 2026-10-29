@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Быстрые действия</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Navigation</span>
+        <h1 class="demo-title">Быстрые действия</h1>
+        <p class="demo-sub">Сетка крупных плиток для основных сервисов.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Три колонки</div>
+        <div class="quick-row">
+            <button class="quick-btn"><i data-lucide="log-out"></i> Отпустить домой</button>
+            <button class="quick-btn"><i data-lucide="id-card"></i> Гостевой пропуск</button>
+            <button class="quick-btn"><i data-lucide="move"></i> Разрешение на лифт</button>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Меню Iskra</div>
+        <div class="iskra-menu">
+            <button class="iskra-menu-item">
+                <span class="iskra-app-icon"><i data-lucide="sparkles"></i></span>
+                <span>Чат с IskraGPT</span>
+            </button>
+            <button class="iskra-menu-item">
+                <span class="iskra-app-icon"><i data-lucide="monitor"></i></span>
+                <span>Управление экранами</span>
+            </button>
+            <button class="iskra-menu-item">
+                <span class="iskra-app-icon"><i data-lucide="volume-2"></i></span>
+                <span>Громкая связь</span>
+            </button>
+            <button class="iskra-menu-item">
+                <span class="iskra-app-icon"><i data-lucide="calendar-days"></i></span>
+                <span>Расписание</span>
+            </button>
+        </div>
+    </section>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Модальное окно</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Overlays</span>
+        <h1 class="demo-title">Модальное окно</h1>
+        <p class="demo-sub">Стеклянный диалог с подтверждением действия.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Демонстрация</div>
+        <div class="demo-row">
+            <button class="btn btn-primary" id="openModal"><i data-lucide="log-out"></i> Отпустить домой</button>
+            <button class="btn btn-secondary" id="openDanger"><i data-lucide="trash-2"></i> Удалить</button>
+        </div>
+    </section>
+</div>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-head">
+            <div class="modal-icon" id="modalIcon"><i data-lucide="log-out"></i></div>
+            <div>
+                <h2 class="modal-title" id="modalTitle">Отпустить учащегося?</h2>
+                <p class="modal-sub" id="modalSub">Иван Петров будет отмечен как ушедший домой. Родители получат уведомление.</p>
+            </div>
+            <button class="modal-close" id="closeModal" aria-label="Закрыть"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" data-close>Отмена</button>
+            <button class="btn btn-primary" id="confirmBtn">Подтвердить</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    if (window.lucide) lucide.createIcons();
+
+    var modal = document.getElementById('modal');
+    var icon = document.getElementById('modalIcon');
+    var title = document.getElementById('modalTitle');
+    var sub = document.getElementById('modalSub');
+    var confirmBtn = document.getElementById('confirmBtn');
+
+    function open(kind) {
+        if (kind === 'danger') {
+            icon.style.background = 'rgba(248,113,113,0.15)';
+            icon.style.color = 'var(--err-color)';
+            icon.innerHTML = '<i data-lucide="trash-2"></i>';
+            title.textContent = 'Удалить запись?';
+            sub.textContent = 'Действие нельзя отменить. Запись будет удалена из портала.';
+            confirmBtn.className = 'btn btn-danger';
+            confirmBtn.textContent = 'Удалить';
+        } else {
+            icon.style.background = 'var(--accent-soft)';
+            icon.style.color = 'var(--accent)';
+            icon.innerHTML = '<i data-lucide="log-out"></i>';
+            title.textContent = 'Отпустить учащегося?';
+            sub.textContent = 'Иван Петров будет отмечен как ушедший домой. Родители получат уведомление.';
+            confirmBtn.className = 'btn btn-primary';
+            confirmBtn.textContent = 'Подтвердить';
+        }
+        if (window.lucide) lucide.createIcons();
+        modal.classList.add('open');
+    }
+
+    function close() { modal.classList.remove('open'); }
+
+    document.getElementById('openModal').addEventListener('click', function () { open('default'); });
+    document.getElementById('openDanger').addEventListener('click', function () { open('danger'); });
+    document.getElementById('closeModal').addEventListener('click', close);
+    confirmBtn.addEventListener('click', close);
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal || e.target.closest('[data-close]')) close();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+</script>
+</body>
+</html>

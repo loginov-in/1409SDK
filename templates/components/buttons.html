@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Кнопки</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Actions</span>
+        <h1 class="demo-title">Кнопки</h1>
+        <p class="demo-sub">Основные действия портала: pill-форма, акцентный цвет и мягкие тени.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Варианты</div>
+        <div class="demo-row">
+            <button class="btn btn-primary"><i data-lucide="sparkles"></i> Основная</button>
+            <button class="btn btn-secondary"><i data-lucide="settings"></i> Вторичная</button>
+            <button class="btn btn-outline"><i data-lucide="plus"></i> Outline</button>
+            <button class="btn btn-ghost"><i data-lucide="x"></i> Ghost</button>
+            <button class="btn btn-danger"><i data-lucide="trash-2"></i> Удалить</button>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Размеры</div>
+        <div class="demo-row">
+            <button class="btn btn-primary btn-sm">Small</button>
+            <button class="btn btn-primary">Default</button>
+            <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Иконки</div>
+        <div class="demo-row">
+            <button class="btn btn-primary btn-icon" title="Добавить"><i data-lucide="plus"></i></button>
+            <button class="btn btn-secondary btn-icon" title="Настройки"><i data-lucide="sliders-horizontal"></i></button>
+            <button class="btn btn-secondary btn-icon btn-sm" title="Закрыть"><i data-lucide="x"></i></button>
+            <button class="btn btn-outline"><i data-lucide="download"></i> Скачать</button>
+            <button class="btn btn-primary"><i data-lucide="send"></i> Отправить</button>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Состояния</div>
+        <div class="demo-row">
+            <button class="btn btn-primary btn-block">На всю ширину</button>
+        </div>
+        <div class="demo-row">
+            <button class="btn btn-secondary" disabled>Disabled</button>
+            <button class="btn btn-primary" disabled><span class="spinner"></span> Загрузка…</button>
+        </div>
+    </section>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

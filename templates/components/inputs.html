@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Поля ввода</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Forms</span>
+        <h1 class="demo-title">Поля ввода</h1>
+        <p class="demo-sub">Pill-инпуты с иконками, подсказками и состояниями ошибки.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Текстовые поля</div>
+        <div class="demo-grid demo-grid-2">
+            <div>
+                <label class="field-label" for="fio">ФИО</label>
+                <input class="field" id="fio" type="text" placeholder="Иванов Иван Иванович" autocomplete="off">
+            </div>
+            <div>
+                <label class="field-label" for="search">Поиск</label>
+                <div class="field-wrap">
+                    <span class="field-icon"><i data-lucide="search"></i></span>
+                    <input class="field" id="search" type="search" placeholder="Найти сервис…" autocomplete="off">
+                </div>
+            </div>
+            <div>
+                <label class="field-label" for="pass">Пароль</label>
+                <div class="field-wrap">
+                    <span class="field-icon"><i data-lucide="lock"></i></span>
+                    <input class="field" id="pass" type="password" value="secret" autocomplete="off">
+                    <button class="field-action" type="button" id="togglePass" aria-label="Показать пароль"><i data-lucide="eye"></i></button>
+                </div>
+            </div>
+            <div>
+                <label class="field-label" for="role">Роль</label>
+                <select class="field" id="role">
+                    <option>Учитель</option>
+                    <option>Администратор</option>
+                    <option>Гость</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Многострочное поле</div>
+        <label class="field-label" for="comment">Комментарий</label>
+        <textarea class="field" id="comment" placeholder="Напишите сообщение…"></textarea>
+        <div class="field-hint">Не более 500 символов</div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Ошибка</div>
+        <div class="field-wrap">
+            <span class="field-icon"><i data-lucide="mail"></i></span>
+            <input class="field field-error" type="email" value="ivan@" autocomplete="off">
+        </div>
+        <div class="field-error-msg">Введите корректный e-mail</div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Чекбоксы и переключатели</div>
+        <div class="demo-row" style="gap:26px">
+            <label class="check"><input type="checkbox" checked> Запомнить меня</label>
+            <label class="check"><input type="checkbox"> Согласен с правилами</label>
+        </div>
+        <div class="demo-row" style="gap:26px">
+            <label class="switch"><input type="checkbox" checked><span class="switch-track"></span> Уведомления</label>
+            <label class="switch"><input type="checkbox"><span class="switch-track"></span> Тихий режим</label>
+        </div>
+    </section>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    if (window.lucide) lucide.createIcons();
+    document.getElementById('togglePass').addEventListener('click', function () {
+        var input = document.getElementById('pass');
+        input.type = input.type === 'password' ? 'text' : 'password';
+    });
+</script>
+</body>
+</html>

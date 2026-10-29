@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Чипы и бейджи</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Labels</span>
+        <h1 class="demo-title">Чипы и бейджи</h1>
+        <p class="demo-sub">Фильтры, статусы и компактные метки.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Фильтры</div>
+        <div class="demo-row" id="chipRow">
+            <button class="chip active"><i data-lucide="check"></i> Все</button>
+            <button class="chip">Учёба</button>
+            <button class="chip">Спорт</button>
+            <button class="chip">Творчество</button>
+            <button class="chip"><i data-lucide="plus"></i> Ещё</button>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Статусы</div>
+        <div class="demo-row">
+            <span class="badge badge-accent">Новое</span>
+            <span class="badge badge-ok badge-dot">Активно</span>
+            <span class="badge badge-warn badge-dot">Ожидание</span>
+            <span class="badge badge-err badge-dot">Ошибка</span>
+            <span class="badge">Черновик</span>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Статичные чипы</div>
+        <div class="demo-row">
+            <span class="chip chip-static"><i data-lucide="radio"></i> Онлайн</span>
+            <span class="chip chip-static"><i data-lucide="wifi"></i> Wi-Fi</span>
+            <span class="chip chip-static"><i data-lucide="map-pin"></i> Кампус</span>
+        </div>
+    </section>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    if (window.lucide) lucide.createIcons();
+    document.getElementById('chipRow').addEventListener('click', function (e) {
+        var chip = e.target.closest('.chip');
+        if (!chip) return;
+        this.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
+        chip.classList.add('active');
+    });
+</script>
+</body>
+</html>

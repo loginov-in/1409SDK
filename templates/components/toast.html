@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Тосты</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <style>
+        #toastHost {
+            position: fixed; bottom: 26px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            z-index: 200; pointer-events: none;
+        }
+        #toastHost .toast {
+            animation: toastIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        #toastHost .toast.hide { animation: toastOut 0.25s ease forwards; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: none; } }
+        @keyframes toastOut { to { opacity: 0; transform: translateY(10px) scale(0.97); } }
+    </style>
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Feedback</span>
+        <h1 class="demo-title">Тосты</h1>
+        <p class="demo-sub">Всплывающие уведомления о результате действия.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Запустить</div>
+        <div class="demo-row">
+            <button class="btn btn-primary" data-toast="ok"><i data-lucide="check"></i> Успех</button>
+            <button class="btn btn-danger" data-toast="err"><i data-lucide="alert-circle"></i> Ошибка</button>
+            <button class="btn btn-secondary" data-toast="info"><i data-lucide="info"></i> Информация</button>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Статичный вид</div>
+        <div class="demo-col">
+            <span class="toast toast-ok"><i data-lucide="check-circle"></i> Гостевой пропуск создан</span>
+            <span class="toast toast-err"><i data-lucide="alert-circle"></i> Не удалось сохранить изменения</span>
+            <span class="toast toast-info"><i data-lucide="info"></i> Расписание обновлено</span>
+        </div>
+    </section>
+</div>
+
+<div id="toastHost" role="status" aria-live="polite"></div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    if (window.lucide) lucide.createIcons();
+
+    var host = document.getElementById('toastHost');
+    var presets = {
+        ok: { cls: 'toast-ok', icon: 'check-circle', text: 'Гостевой пропуск создан' },
+        err: { cls: 'toast-err', icon: 'alert-circle', text: 'Не удалось сохранить изменения' },
+        info: { cls: 'toast-info', icon: 'info', text: 'Расписание обновлено' }
+    };
+
+    function showToast(kind) {
+        var p = presets[kind] || presets.info;
+        var el = document.createElement('div');
+        el.className = 'toast ' + p.cls;
+        el.innerHTML = '<i data-lucide="' + p.icon + '"></i><span>' + p.text + '</span>';
+        host.appendChild(el);
+        if (window.lucide) lucide.createIcons();
+        setTimeout(function () {
+            el.classList.add('hide');
+            setTimeout(function () { el.remove(); }, 260);
+        }, 2400);
+    }
+
+    document.querySelectorAll('[data-toast]').forEach(function (btn) {
+        btn.addEventListener('click', function () { showToast(btn.dataset.toast); });
+    });
+</script>
+</body>
+</html>

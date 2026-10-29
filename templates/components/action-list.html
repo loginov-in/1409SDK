@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Список действий</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Lists</span>
+        <h1 class="demo-title">Список действий</h1>
+        <p class="demo-sub">Лента последних событий с точками-индикаторами.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Последние действия</div>
+        <div class="action-list">
+            <div class="action-item">
+                <span class="dot"></span>
+                <span><span class="action-title">Гостевой пропуск</span> — создан для Ивана Петрова</span>
+                <span class="action-time">2 мин назад</span>
+            </div>
+            <div class="action-item">
+                <span class="dot"></span>
+                <span><span class="action-title">Выход учащегося</span> — согласован классным руководителем</span>
+                <span class="action-time">14:32</span>
+            </div>
+            <div class="action-item">
+                <span class="dot"></span>
+                <span><span class="action-title">Экран</span> — обновлено расписание в холле</span>
+                <span class="action-time">13:05</span>
+            </div>
+            <div class="action-item">
+                <span class="dot"></span>
+                <span><span class="action-title">Лифт</span> — выдан доступ ученику 9Б</span>
+                <span class="action-time">12:48</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">С аватарами</div>
+        <div class="action-list">
+            <div class="action-item">
+                <img class="avatar avatar-sm" src="/static/images/default_avatar.png" alt="">
+                <span><span class="action-title">Алексей Логинов</span> — вошёл в панель</span>
+                <span class="action-time">сейчас</span>
+            </div>
+            <div class="action-item">
+                <img class="avatar avatar-sm" src="/static/images/default_avatar.png" alt="">
+                <span><span class="action-title">Мария Смирнова</span> — загрузила компонент</span>
+                <span class="action-time">10:12</span>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

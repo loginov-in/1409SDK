@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Меню Iskra</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Iskra</span>
+        <h1 class="demo-title">Меню Iskra</h1>
+        <p class="demo-sub">Стартовое меню ассистента с крупными иконками.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="card">
+            <div class="card-head">
+                <div class="card-icon"><i data-lucide="sparkles"></i></div>
+                <div>
+                    <h2 class="card-title">iskra AI</h2>
+                    <div class="card-meta">Чем могу помочь?</div>
+                </div>
+            </div>
+
+            <div class="iskra-menu">
+                <button class="iskra-menu-item">
+                    <span class="iskra-app-icon"><i data-lucide="message-circle"></i></span>
+                    <span>Чат с IskraGPT</span>
+                </button>
+                <button class="iskra-menu-item">
+                    <span class="iskra-app-icon"><i data-lucide="log-out"></i></span>
+                    <span>Отпустить домой</span>
+                </button>
+                <button class="iskra-menu-item">
+                    <span class="iskra-app-icon"><i data-lucide="id-card"></i></span>
+                    <span>Гостевой пропуск</span>
+                </button>
+                <button class="iskra-menu-item">
+                    <span class="iskra-app-icon"><i data-lucide="move"></i></span>
+                    <span>Разрешения на лифт</span>
+                </button>
+                <button class="iskra-menu-item">
+                    <span class="iskra-app-icon"><i data-lucide="monitor"></i></span>
+                    <span>Экраны</span>
+                </button>
+                <button class="iskra-menu-item">
+                    <span class="iskra-app-icon"><i data-lucide="volume-2"></i></span>
+                    <span>Громкая связь</span>
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>

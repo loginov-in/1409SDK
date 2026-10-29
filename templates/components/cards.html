@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Карточки</title>
+    <script>(function () { var t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); })();</script>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+<div class="demo">
+    <div class="demo-head">
+        <span class="demo-eyebrow">Components / Surfaces</span>
+        <h1 class="demo-title">Карточки</h1>
+        <p class="demo-sub">Стеклянные поверхности с акцентным градиентом портала.</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="demo-label">Основная карточка</div>
+        <div class="card">
+            <div class="card-head">
+                <div class="card-icon"><i data-lucide="sparkles"></i></div>
+                <div>
+                    <h2 class="card-title">iskra AI</h2>
+                    <div class="card-meta">online · быстрый ответ</div>
+                </div>
+            </div>
+            <p class="card-sub">Задайте вопрос, создайте заявку или управляйте сервисами портала в одном окне.</p>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Стеклянная карточка</div>
+        <div class="demo-grid demo-grid-2">
+            <div class="card-glass">
+                <h3 class="card-title">Статистика</h3>
+                <p class="card-sub">124 заявки обработано за неделю</p>
+            </div>
+            <div class="card-glass">
+                <h3 class="card-title">Расписание</h3>
+                <p class="card-sub">Следующий урок через 15 минут</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-label">Событие</div>
+        <div class="event-card">
+            <div class="event-body">
+                <span class="event-tag">Мероприятие · 12 ноября</span>
+                <div class="event-title">День открытых дверей</div>
+                <div style="font-size:0.82rem;opacity:.8">Актовый зал · 16:00</div>
+                <button class="btn btn-secondary btn-sm" style="align-self:flex-start;margin-top:auto">Подробнее</button>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>
