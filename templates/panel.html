@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1409 SDK — Admin</title>
+    <link rel="icon" href="/static/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+    <style>
+        /* ─── RESET ─── */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        ::-webkit-scrollbar { width:5px; height:5px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:10px; }
+        ::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,0.2); }
+
+        /* ─── TOKENS ─── */
+        :root {
+            --bg:          #09090b;
+            --s1:          #111116;
+            --s2:          rgba(255,255,255,0.03);
+            --s3:          rgba(255,255,255,0.06);
+            --border:      rgba(255,255,255,0.07);
+            --border2:     rgba(255,255,255,0.12);
+            --accent:      #6366f1;
+            --accent-dim:  rgba(99,102,241,0.15);
+            --accent-text: #818cf8;
+            --red:         #e63530;
+            --green:       #17c964;
+            --yellow:      #f5a524;
+            --t1:          #ecedee;
+            --t2:          #9ba1a6;
+            --t3:          rgba(255,255,255,0.28);
+            --radius:      12px;
+            --sidebar-w:   248px;
+            --topbar-h:    57px;
+        }
+
+        /* ─── BODY ─── */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--t1);
+            height: 100vh;
+            display: grid;
+            grid-template-columns: var(--sidebar-w) 1fr;
+            grid-template-rows: 1fr 24px;
+            overflow: hidden;
+        }
+
+        /* ═══════════════════════════════════════
+           SIDEBAR
+        ═══════════════════════════════════════ */
+        .sidebar {
+            grid-row: 1 / 3;
+            background: var(--s1);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Brand */
+        .sb-brand {
+            height: var(--topbar-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .sb-brand-logo {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, #4446E1, #e63530);
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .sb-brand-logo img { width: 22px; height: 22px; object-fit: contain; }
+        .sb-brand-name { font-size: 0.88rem; font-weight: 700; letter-spacing: 0.3px; flex: 1; }
+        .sb-brand-badge {
+            font-size: 0.58rem; font-weight: 800; letter-spacing: 1px;
+            background: var(--accent-dim); color: var(--accent-text);
+            border: 1px solid rgba(99,102,241,0.25);
+            padding: 2px 7px; border-radius: 20px;
+        }
+
+        /* Search */
+        .sb-search {
+            margin: 10px 10px 4px;
+            display: flex; align-items: center; gap: 8px;
+            background: var(--s2);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 7px 12px;
+            transition: border-color 0.2s, background 0.2s;
+            flex-shrink: 0;
+        }
+        .sb-search:focus-within {
+            border-color: rgba(99,102,241,0.4);
+            background: rgba(99,102,241,0.05);
+        }
+        .sb-search svg { color: var(--t3); flex-shrink: 0; }
+        .sb-search input {
+            background: none; border: none; outline: none;
+            color: var(--t1); font-size: 0.78rem; width: 100%;
+        }
+        .sb-search input::placeholder { color: var(--t3); }
+
+        /* Scroll area */
+        .sb-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        /* Section header */
+        .sb-section {
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--t3);
+            padding: 12px 8px 5px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .sb-section-count {
+            background: var(--s3); border: 1px solid var(--border);
+            color: var(--t3); font-size: 0.6rem; font-weight: 700;
+            padding: 1px 6px; border-radius: 6px; letter-spacing: 0;
+        }
+
+        /* Nav item */
+        .sb-item {
+            display: flex; align-items: center; gap: 9px;
+            padding: 7px 10px;
+            border-radius: 9px;
+            font-size: 0.8rem; font-weight: 500; color: var(--t2);
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left;
+            transition: background 0.15s, color 0.15s;
+            position: relative;
+        }
+        .sb-item:hover { background: var(--s3); color: var(--t1); }
+        .sb-item.active {
+            background: rgba(99,102,241,0.1);
+            color: var(--accent-text);
+        }
+        .sb-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 20%; bottom: 20%;
+            width: 2px; border-radius: 2px;
+            background: var(--accent);
+        }
+        .sb-item svg { flex-shrink: 0; width: 15px; height: 15px; }
+        .sb-item .item-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sb-item .item-badge {
+            font-size: 0.58rem; padding: 1px 6px; border-radius: 5px;
+            background: var(--s3); color: var(--t3); flex-shrink: 0;
+            font-weight: 700; letter-spacing: 0.3px;
+        }
+        .sb-item.active .item-badge { background: rgba(99,102,241,0.2); color: var(--accent-text); }
+
+        /* Divider */
+        .sb-divider {
+            height: 1px; background: var(--border);
+            margin: 6px 8px;
+        }
+
+        /* Sidebar footer */
+        .sb-footer {
+            flex-shrink: 0;
+            border-top: 1px solid var(--border);
+            padding: 10px 14px;
+        }
+        .sb-status {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.72rem; color: var(--t3);
+        }
+        .sb-status-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 6px var(--green);
+            animation: statusPulse 2.5s ease-in-out infinite;
+        }
+        @keyframes statusPulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+        .sb-status strong { color: var(--t2); font-weight: 600; }
+
+        /* ═══════════════════════════════════════
+           MAIN COLUMN
+        ═══════════════════════════════════════ */
+        .main-col {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ─── Topbar ─── */
+        .topbar {
+            height: var(--topbar-h);
+            display: flex; align-items: center; gap: 10px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            position: relative;
+        }
+        .topbar::after {
+            content: '';
+            position: absolute; bottom: -1px; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent) 30%, var(--red) 70%, transparent 100%);
+            background-size: 200% 100%;
+            animation: topline 5s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes topline {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Breadcrumb */
+        .topbar-breadcrumb {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.78rem; color: var(--t2);
+        }
+        .topbar-breadcrumb svg { color: var(--t3); }
+        .topbar-breadcrumb .sep { color: var(--t3); }
+        #breadcrumbPath { color: var(--t1); font-weight: 600; }
+
+        .topbar-right {
+            margin-left: auto;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .topbar-chip {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.72rem; color: var(--t2);
+            background: var(--s2); border: 1px solid var(--border);
+            padding: 4px 10px; border-radius: 8px;
+        }
+        .topbar-chip span { color: var(--t1); font-weight: 700; }
+        .topbar-chip .dot { width: 5px; height: 5px; border-radius: 50%; }
+
+        .topbar-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: var(--s2); border: 1px solid var(--border);
+            border-radius: 9px; color: var(--t2);
+            font-size: 0.78rem; font-weight: 600; padding: 5px 12px;
+            cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .topbar-btn:hover { border-color: var(--border2); color: var(--t1); }
+        .topbar-kbd { font-family: monospace; font-size: 0.68rem; opacity: 0.5; }
+
+        /* ─── Tabs ─── */
+        .tabs {
+            display: flex; align-items: center; gap: 1px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.15);
+        }
+        .tab-btn {
+            display: flex; align-items: center; gap: 7px;
+            padding: 0 4px; height: 42px;
+            border: none; background: none;
+            color: var(--t2); font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; transition: color 0.2s;
+            position: relative; margin-right: 8px;
+            font-family: inherit;
+        }
+        .tab-btn:hover { color: var(--t1); }
+        .tab-btn.active { color: var(--t1); }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px; border-radius: 2px 2px 0 0;
+            background: var(--accent);
+            animation: tabIn 0.25s ease;
+        }
+        @keyframes tabIn { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        .tab-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .tabs-right { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+
+        /* ─── Panels ─── */
+        .panels { flex: 1; overflow: hidden; position: relative; }
+        .panel { display: none; width: 100%; height: 100%; flex-direction: column; overflow: hidden; }
+        .panel.active { display: flex; animation: panelIn 0.22s cubic-bezier(0.22,1,0.36,1); }
+        @keyframes panelIn {
+            from { opacity:0; transform: translateY(8px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════
+           DASHBOARD PANEL
+        ═══════════════════════════════════════ */
+        #welcomePanel {
+            overflow-y: auto;
+            padding: 28px 28px 40px;
+            gap: 24px;
+        }
+
+        .dash-heading {
+            font-size: 1.3rem; font-weight: 700; color: var(--t1);
+            letter-spacing: -0.3px;
+        }
+        .dash-sub { font-size: 0.82rem; color: var(--t2); margin-top: 3px; }
+
+        /* Stat cards */
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+        .stat-card {
+            background: var(--s2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+            position: relative; overflow: hidden;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+        }
+        .stat-card:hover { border-color: var(--border2); background: var(--s3); transform: translateY(-1px); }
+        .stat-card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+        .stat-icon {
+            width: 38px; height: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .stat-icon svg { width: 18px; height: 18px; }
+        .stat-icon-css   { background: rgba(99,102,241,0.12); color: #818cf8; }
+        .stat-icon-html  { background: rgba(245,165,36,0.12); color: var(--yellow); }
+        .stat-icon-asset { background: rgba(23,201,100,0.12); color: var(--green); }
+        .stat-badge {
+            font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+            background: rgba(23,201,100,0.1); color: var(--green);
+        }
+        .stat-val { font-size: 2rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+        .stat-label { font-size: 0.75rem; color: var(--t2); font-weight: 500; }
+
+        /* Recent files table */
+        .dash-section-title {
+            font-size: 0.82rem; font-weight: 700; color: var(--t1);
+            margin-bottom: 2px;
+        }
+        .files-table {
+            background: var(--s2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .files-table-head {
+            display: grid;
+            grid-template-columns: 1fr 80px 80px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 1.2px;
+            text-transform: uppercase; color: var(--t3);
+        }
+        .files-table-row {
+            display: grid;
+            grid-template-columns: 1fr 80px 80px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        .files-table-row:last-child { border-bottom: none; }
+        .files-table-row:hover { background: var(--s3); }
+        .row-name { display: flex; align-items: center; gap: 9px; font-size: 0.8rem; color: var(--t1); font-weight: 500; }
+        .row-name svg { color: var(--t3); width: 14px; height: 14px; flex-shrink: 0; }
+        .row-type { font-size: 0.68rem; }
+        .type-chip {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 8px; border-radius: 6px;
+            font-size: 0.65rem; font-weight: 700;
+        }
+        .type-css  { background: rgba(99,102,241,0.12); color: #818cf8; }
+        .type-html { background: rgba(245,165,36,0.12);  color: var(--yellow); }
+        .row-action { display: flex; justify-content: flex-end; }
+        .row-btn {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 0.7rem; color: var(--t3); background: none; border: none;
+            cursor: pointer; padding: 3px 6px; border-radius: 6px;
+            font-family: inherit; transition: color 0.15s, background 0.15s;
+        }
+        .row-btn:hover { color: var(--accent-text); background: var(--accent-dim); }
+
+        /* Shortcuts */
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .shortcut-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 9px 14px;
+            background: var(--s2); border: 1px solid var(--border);
+            border-radius: 10px; font-size: 0.78rem; color: var(--t2);
+        }
+        .shortcut-row kbd {
+            background: var(--s3); border: 1px solid var(--border2);
+            border-radius: 5px; padding: 2px 8px;
+            font-family: monospace; font-size: 0.68rem; color: var(--t1);
+        }
+
+        /* ═══════════════════════════════════════
+           CODE PANEL
+        ═══════════════════════════════════════ */
+        #codePanel { position: relative; }
+        .code-toolbar {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.1);
+        }
+        .toolbar-btn {
+            display: flex; align-items: center; gap: 5px;
+            background: var(--s2); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--t2); padding: 4px 12px;
+            font-size: 0.73rem; font-weight: 600; cursor: pointer;
+            transition: all 0.15s; font-family: inherit;
+        }
+        .toolbar-btn:hover { border-color: var(--border2); color: var(--t1); }
+        .toolbar-btn.copied { color: var(--green); border-color: rgba(23,201,100,0.3); }
+        .toolbar-btn svg { width: 13px; height: 13px; }
+        .code-line-count { margin-left: auto; font-size: 0.68rem; color: var(--t3); }
+        .code-wrap { flex: 1; overflow: auto; }
+        .code-wrap pre { margin:0 !important; border-radius:0 !important; background:transparent !important; min-height:100%; }
+        .code-wrap code { font-size:0.79rem !important; line-height:1.7 !important; padding:20px !important; }
+
+        /* Skeleton */
+        .code-skeleton { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .skel-line {
+            height: 11px; background: rgba(255,255,255,0.05); border-radius: 6px;
+            animation: skelPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes skelPulse { 0%,100%{opacity:.4} 50%{opacity:.8} }
+
+        /* ═══════════════════════════════════════
+           PREVIEW PANEL
+        ═══════════════════════════════════════ */
+        .preview-toolbar {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border); flex-shrink: 0;
+            background: rgba(0,0,0,0.1);
+        }
+        .preview-toolbar select {
+            background: var(--s2); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--t1); padding: 5px 12px;
+            font-size: 0.78rem; outline: none; cursor: pointer;
+            transition: border-color 0.2s; font-family: inherit;
+        }
+        .preview-toolbar select:focus { border-color: rgba(99,102,241,0.4); }
+        .preview-run-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 8px; color: var(--accent-text); padding: 5px 16px;
+            font-size: 0.78rem; font-weight: 700; cursor: pointer;
+            transition: all 0.2s; font-family: inherit;
+        }
+        .preview-run-btn:hover { background: rgba(99,102,241,0.25); box-shadow: 0 4px 12px rgba(99,102,241,0.2); }
+        .size-group { display: flex; gap: 3px; }
+        .size-btn {
+            display: flex; align-items: center; gap: 5px;
+            background: var(--s2); border: 1px solid var(--border);
+            border-radius: 7px; color: var(--t2); padding: 4px 10px;
+            font-size: 0.72rem; cursor: pointer; transition: all 0.15s; font-family: inherit;
+        }
+        .size-btn.active { background: var(--s3); color: var(--t1); border-color: var(--border2); }
+        .size-btn svg { width: 12px; height: 12px; }
+        .preview-sep { width:1px; height:20px; background:var(--border); flex-shrink:0; }
+        .preview-theme-group { display:flex; gap:3px; margin-left:auto; }
+        .css-status { display:flex; align-items:center; gap:5px; font-size:0.68rem; color:var(--green); }
+        .css-status span { width:5px; height:5px; border-radius:50%; background:var(--green); }
+        .css-chips { display:flex; gap:5px; flex-wrap:wrap; padding:6px 16px; border-bottom:1px solid var(--border); flex-shrink:0; }
+        .css-chip { font-size:0.62rem; font-weight:700; padding:2px 8px; border-radius:5px; background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.2); color:var(--accent-text); }
+        .preview-frame-wrap {
+            flex:1; display:flex; align-items:flex-start; justify-content:center;
+            overflow:auto; padding:20px;
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.012) 0, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 20px);
+        }
+        #previewFrame {
+            border:none; border-radius:14px; width:100%; height:100%;
+            min-height:500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+            transition: width .35s cubic-bezier(0.34,1.56,0.64,1), height .35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        /* ═══════════════════════════════════════
+           STATIC PANEL
+        ═══════════════════════════════════════ */
+        #staticPanel { overflow-y:auto; padding:20px; }
+        .static-search {
+            display:flex; align-items:center; gap:8px;
+            background:var(--s2); border:1px solid var(--border);
+            border-radius:9px; padding:8px 14px; margin-bottom:18px;
+            transition: border-color .2s;
+        }
+        .static-search:focus-within { border-color:rgba(99,102,241,0.35); }
+        .static-search input { background:none; border:none; outline:none; color:var(--t1); font-size:0.82rem; width:100%; }
+        .static-search svg { color:var(--t3); }
+        .cat-title {
+            font-size:0.62rem; font-weight:700; letter-spacing:1.5px;
+            text-transform:uppercase; color:var(--t3); margin:16px 0 10px;
+        }
+        .assets-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(110px,1fr)); gap:10px; }
+        .asset-card {
+            background:var(--s2); border:1px solid var(--border);
+            border-radius:10px; padding:14px 10px;
+            display:flex; flex-direction:column; align-items:center; gap:8px;
+            cursor:pointer; transition:all .2s; position:relative; overflow:hidden;
+            animation: cardIn .3s ease both;
+        }
+        @keyframes cardIn { from{opacity:0;transform:scale(.9) translateY(6px)} to{opacity:1;transform:none} }
+        .asset-card:hover { border-color:rgba(99,102,241,0.3); background:var(--s3); transform:translateY(-2px); }
+        .asset-card img { max-width:64px; max-height:48px; object-fit:contain; transition:transform .3s; }
+        .asset-card:hover img { transform:scale(1.1); }
+        .asset-font-preview { font-size:1.8rem; font-weight:800; background:linear-gradient(135deg,var(--accent-text),#e86060); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .asset-name { font-size:0.62rem; color:var(--t3); text-align:center; word-break:break-all; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .asset-copy-btn {
+            background:var(--accent-dim); border:1px solid rgba(99,102,241,0.25);
+            border-radius:7px; color:var(--accent-text);
+            font-size:0.6rem; font-weight:700; padding:3px 8px;
+            cursor:pointer; transition:all .2s; opacity:0; font-family:inherit;
+        }
+        .asset-card:hover .asset-copy-btn { opacity:1; }
+        .asset-copy-btn.copied { background:rgba(23,201,100,0.15); border-color:rgba(23,201,100,0.3); color:var(--green); }
+
+        /* ═══════════════════════════════════════
+           CDN PANEL
+        ═══════════════════════════════════════ */
+        #cdnPanel { overflow-y:auto; }
+        .cdn-header {
+            padding:16px 20px;
+            border-bottom:1px solid var(--border);
+            display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+            flex-shrink:0;
+        }
+        .cdn-url-input {
+            flex:1; min-width:220px;
+            background:var(--s2); border:1px solid var(--border);
+            border-radius:9px; padding:7px 14px;
+            color:var(--t1); font-size:0.8rem; outline:none;
+            font-family:monospace;
+            transition:border-color .2s;
+        }
+        .cdn-url-input:focus { border-color:rgba(99,102,241,0.4); }
+        .cdn-list { padding:16px 20px; display:flex; flex-direction:column; gap:8px; }
+        .cdn-group-title { font-size:0.62rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--t3); margin:8px 0 6px; }
+        .cdn-row {
+            background:var(--s2); border:1px solid var(--border);
+            border-radius:10px; padding:11px 14px;
+            display:flex; flex-direction:column; gap:5px;
+        }
+        .cdn-row-top { display:flex; align-items:center; gap:8px; }
+        .cdn-row-path { font-size:0.7rem; color:var(--t2); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .cdn-copy-btn {
+            background:var(--s3); border:1px solid var(--border);
+            border-radius:7px; color:var(--t2); font-size:0.68rem; font-weight:700;
+            padding:3px 10px; cursor:pointer; transition:all .15s; font-family:inherit; flex-shrink:0;
+        }
+        .cdn-copy-btn:hover { border-color:rgba(99,102,241,.3); color:var(--accent-text); }
+        .cdn-copy-btn.copied { color:var(--green); border-color:rgba(23,201,100,.3); }
+        .cdn-snippet { font-size:0.7rem; color:var(--accent-text); font-family:monospace; word-break:break-all; line-height:1.5; }
+
+        /* ═══════════════════════════════════════
+           CMD PALETTE
+        ═══════════════════════════════════════ */
+        #cmdPalette {
+            position:fixed; inset:0; background:rgba(0,0,0,0.65);
+            backdrop-filter:blur(16px); z-index:1000;
+            display:none; align-items:flex-start; justify-content:center;
+            padding-top:14vh;
+        }
+        #cmdPalette.open { display:flex; animation:fadeIn .18s ease; }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        .cmd-box {
+            background:#161620; border:1px solid rgba(255,255,255,0.1);
+            border-radius:16px; width:540px; max-height:58vh; overflow:hidden;
+            display:flex; flex-direction:column;
+            box-shadow:0 30px 80px rgba(0,0,0,0.7);
+            animation:cmdIn .2s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes cmdIn { from{opacity:0;transform:scale(.92) translateY(-10px)} to{opacity:1;transform:none} }
+        .cmd-input-wrap {
+            display:flex; align-items:center; gap:12px;
+            padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.07);
+        }
+        .cmd-input-wrap svg { opacity:.45; flex-shrink:0; }
+        #cmdInput { background:none; border:none; outline:none; color:var(--t1); font-size:0.95rem; width:100%; font-family:inherit; }
+        .cmd-results { overflow-y:auto; padding:6px; }
+        .cmd-item {
+            display:flex; align-items:center; gap:10px;
+            padding:9px 12px; border-radius:9px; cursor:pointer;
+            transition:background .12s; font-size:0.82rem;
+        }
+        .cmd-item:hover, .cmd-item.selected { background:var(--accent-dim); }
+        .cmd-icon {
+            width:30px; height:30px; background:var(--s3);
+            border-radius:8px; display:flex; align-items:center; justify-content:center;
+            font-size:0.78rem; flex-shrink:0;
+        }
+        .cmd-label { flex:1; color:var(--t1); }
+        .cmd-type { font-size:0.63rem; color:var(--t3); background:var(--s3); padding:2px 6px; border-radius:5px; }
+
+        /* ═══════════════════════════════════════
+           STATUSBAR
+        ═══════════════════════════════════════ */
+        .statusbar {
+            grid-column: 2;
+            display:flex; align-items:center; gap:14px;
+            padding:0 16px;
+            background:rgba(0,0,0,0.25); border-top:1px solid var(--border);
+            font-size:0.63rem; color:var(--t3);
+        }
+        .sb-run { display:flex; align-items:center; gap:5px; }
+        .sb-run-dot { width:5px; height:5px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); animation:statusPulse 2.5s ease-in-out infinite; }
+        .statusbar-sep { opacity:.2; }
+        .statusbar-clock { margin-left:auto; font-variant-numeric:tabular-nums; }
+
+        /* ─── Toast ─── */
+        #toast {
+            position:fixed; bottom:28px; left:50%;
+            transform:translateX(-50%) translateY(16px);
+            background:#1a1a24; backdrop-filter:blur(20px);
+            border:1px solid rgba(99,102,241,0.3); border-radius:999px;
+            padding:9px 20px; font-size:0.8rem; font-weight:600; color:var(--t1);
+            z-index:9999; opacity:0;
+            transition:all .32s cubic-bezier(0.34,1.56,0.64,1);
+            pointer-events:none; white-space:nowrap;
+            box-shadow:0 8px 30px rgba(0,0,0,0.45);
+        }
+        #toast.shown { opacity:1; transform:translateX(-50%) translateY(0); }
+
+        /* ═══════════════════════════════════════
+           ELEMENT PICKER DRAWER
+        ═══════════════════════════════════════ */
+        .picker-btn.active {
+            color: var(--accent-text);
+            border-color: rgba(99,102,241,0.4);
+            background: var(--accent-dim);
+        }
+        .picker-btn.active svg { animation: crosshairSpin 2s linear infinite; }
+        @keyframes crosshairSpin { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        #pickerDrawer {
+            position: fixed;
+            top: 0; right: -520px;
+            width: 480px; height: 100vh;
+            background: #0d0d12;
+            border-left: 1px solid rgba(255,255,255,0.07);
+            display: flex; flex-direction: column;
+            z-index: 950;
+            transition: right 0.32s cubic-bezier(0.22,1,0.36,1);
+            box-shadow: -24px 0 60px rgba(0,0,0,0.55);
+        }
+        #pickerDrawer.open { right: 0; }
+
+        .pd-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 13px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.2);
+        }
+        .pd-title { font-size: 0.75rem; font-weight: 800; color: var(--accent-text); letter-spacing:.5px; flex-shrink:0; }
+        .pd-path  { font-size: 0.68rem; color: var(--t3); font-family: monospace; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .pd-close {
+            width:26px; height:26px; border-radius:7px;
+            background:var(--s2); border:1px solid var(--border);
+            color:var(--t2); display:flex; align-items:center; justify-content:center;
+            cursor:pointer; flex-shrink:0; font-size:1.1rem; line-height:1;
+        }
+        .pd-close:hover { color:var(--t1); background:var(--s3); }
+
+        .pd-tabs {
+            display:flex; align-items:center; gap:4px;
+            padding: 8px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .pd-tab {
+            padding: 5px 14px; border-radius: 7px;
+            font-size: 0.72rem; font-weight: 700;
+            cursor: pointer; background:none; border:none;
+            color: var(--t2); transition: all .15s; font-family:inherit;
+        }
+        .pd-tab.active { background:var(--accent-dim); color:var(--accent-text); }
+        .pd-tab:hover:not(.active) { background:var(--s3); color:var(--t1); }
+        .pd-tabs-right { margin-left:auto; display:flex; gap:6px; }
+
+        .pd-body { flex:1; overflow:auto; }
+        .pd-body pre { margin:0!important; border-radius:0!important; background:transparent!important; min-height:100%; }
+        .pd-body code { font-size:0.77rem!important; line-height:1.65!important; padding:16px!important; }
+
+        .pd-empty {
+            flex:1; display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            gap:14px; color:var(--t3); font-size:.82rem;
+            padding:40px; text-align:center;
+        }
+        .pd-empty svg { opacity:.25; }
+    </style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+    <div class="sb-brand">
+        <div class="sb-brand-logo">
+            <img src="/static/favicon.png" alt="1409" onerror="this.style.display='none'">
+        </div>
+        <span class="sb-brand-name">SDK 1409</span>
+        <span class="sb-brand-badge">DEV</span>
+    </div>
+
+    <div class="sb-search">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Поиск..." id="globalSearch" oninput="filterSidebar(this.value)">
+    </div>
+
+    <div class="sb-scroll">
+        <!-- Navigation -->
+        <div class="sb-section">Навигация</div>
+        <button class="sb-item active" id="navDashboard" onclick="switchTab('welcome'); setActiveSidebar(this)">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span class="item-label">Главная</span>
+        </button>
+        <button class="sb-item" id="navStatic" onclick="showStaticPanel(this)">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span class="item-label">Static файлы</span>
+            <span class="item-badge">{{ static_files|length }}</span>
+        </button>
+        <button class="sb-item" id="navCdn" onclick="switchTab('cdn'); setActiveSidebar(this); renderCdn()">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span class="item-label">CDN ссылки</span>
+        </button>
+
+        <div class="sb-divider"></div>
+
+        <!-- CSS Files -->
+        <div class="sb-section">
+            Стили
+            <span class="sb-section-count">{{ css_files|length }}</span>
+        </div>
+        {% for f in css_files %}
+        <button class="sb-item" data-file="{{ f }}" data-name="{{ f.split('/')[-1] }}"
+                onclick="loadCode('{{ f }}', this)">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            <span class="item-label">{{ f.split('/')[-1] }}</span>
+            <span class="item-badge">css</span>
+        </button>
+        {% endfor %}
+
+        <div class="sb-divider"></div>
+
+        <!-- HTML Components -->
+        <div class="sb-section">
+            Компоненты
+            <span class="sb-section-count">{{ html_files|length }}</span>
+        </div>
+        {% for f in html_files %}
+        <button class="sb-item" data-file="{{ f }}" data-name="{{ f.split('/')[-1] }}"
+                onclick="loadComponent('{{ f.split('/')[-1] }}', this)">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span class="item-label">{{ f.split('/')[-1] }}</span>
+            <span class="item-badge">html</span>
+        </button>
+        {% endfor %}
+    </div>
+
+    <div class="sb-footer">
+        <div class="sb-status">
+            <div class="sb-status-dot"></div>
+            <strong>localhost:9350</strong>
+            <span style="margin-left:auto; opacity:.5;">Flask · debug</span>
+        </div>
+    </div>
+</aside>
+
+<!-- ═══ MAIN COLUMN ═══ -->
+<div class="main-col">
+
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="topbar-breadcrumb">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>1409-SDK</span>
+            <span class="sep">/</span>
+            <span id="breadcrumbPath">Dashboard</span>
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-chip">
+                <span class="dot" style="background:#818cf8;"></span>
+                CSS <span>{{ css_files|length }}</span>
+            </div>
+            <div class="topbar-chip">
+                <span class="dot" style="background:var(--yellow);"></span>
+                HTML <span>{{ html_files|length }}</span>
+            </div>
+            <div class="topbar-chip">
+                <span class="dot" style="background:var(--green);"></span>
+                Static <span>{{ static_files|length }}</span>
+            </div>
+            <button class="topbar-btn" onclick="openCmd()">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Поиск
+                <span class="topbar-kbd">⌘K</span>
+            </button>
+            <button class="topbar-btn" onclick="location.href='/logout'" title="Выйти">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Выйти
+            </button>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" id="tabWelcome" onclick="switchTab('welcome')">
+            <span class="tab-dot" style="background:#818cf8;"></span> Главная
+        </button>
+        <button class="tab-btn" id="tabCode" onclick="switchTab('code')">
+            <span class="tab-dot" style="background:var(--accent-text);"></span> Код
+        </button>
+        <button class="tab-btn" id="tabPreview" onclick="switchTab('preview')">
+            <span class="tab-dot" style="background:var(--yellow);"></span> Превью
+        </button>
+        <button class="tab-btn" id="tabStatic" onclick="switchTab('static')">
+            <span class="tab-dot" style="background:var(--green);"></span> Static
+        </button>
+        <button class="tab-btn" id="tabCdn" onclick="switchTab('cdn'); renderCdn()">
+            <span class="tab-dot" style="background:var(--yellow);"></span> CDN
+        </button>
+        <div class="tabs-right">
+            <button class="toolbar-btn" id="wrapToggle" onclick="toggleWrap()" title="Перенос строк">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Panels -->
+    <div class="panels">
+
+        <!-- ─── DASHBOARD ─── -->
+        <div class="panel active" id="welcomePanel">
+            <div class="dash-heading">Обзор SDK</div>
+            <div class="dash-sub">Компоненты, стили и ресурсы портала 1409</div>
+
+            <div class="stat-row">
+                <div class="stat-card" onclick="switchTab('code'); setActiveSidebar(null)">
+                    <div class="stat-card-top">
+                        <div class="stat-icon stat-icon-css">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <span class="stat-badge">CSS</span>
+                    </div>
+                    <div class="stat-val" data-count="{{ css_files|length }}">{{ css_files|length }}</div>
+                    <div class="stat-label">CSS файлов</div>
+                </div>
+                <div class="stat-card" onclick="switchTab('preview'); setActiveSidebar(null)">
+                    <div class="stat-card-top">
+                        <div class="stat-icon stat-icon-html">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        </div>
+                        <span class="stat-badge" style="background:rgba(245,165,36,0.1);color:var(--yellow);">HTML</span>
+                    </div>
+                    <div class="stat-val" data-count="{{ html_files|length }}">{{ html_files|length }}</div>
+                    <div class="stat-label">Компонентов</div>
+                </div>
+                <div class="stat-card" onclick="showStaticPanel(null)">
+                    <div class="stat-card-top">
+                        <div class="stat-icon stat-icon-asset">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        </div>
+                        <span class="stat-badge" style="background:rgba(23,201,100,0.1);color:var(--green);">Static</span>
+                    </div>
+                    <div class="stat-val" data-count="{{ static_files|length }}">{{ static_files|length }}</div>
+                    <div class="stat-label">Static файлов</div>
+                </div>
+            </div>
+
+            <!-- Files table -->
+            <div>
+                <div class="dash-section-title">Все файлы</div>
+                <div style="color:var(--t3); font-size:0.75rem; margin-bottom:10px;">Кликни для открытия в редакторе или превью</div>
+                <div class="files-table">
+                    <div class="files-table-head">
+                        <div>Файл</div>
+                        <div>Тип</div>
+                        <div></div>
+                    </div>
+                    {% for f in css_files %}
+                    <div class="files-table-row" onclick="loadCode('{{ f }}', null)">
+                        <div class="row-name">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            {{ f.split('/')[-1] }}
+                        </div>
+                        <div class="row-type"><span class="type-chip type-css">CSS</span></div>
+                        <div class="row-action">
+                            <button class="row-btn">
+                                <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                                Открыть
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% for f in html_files %}
+                    <div class="files-table-row" onclick="loadComponent('{{ f.split('/')[-1] }}', null)">
+                        <div class="row-name">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                            {{ f.split('/')[-1] }}
+                        </div>
+                        <div class="row-type"><span class="type-chip type-html">HTML</span></div>
+                        <div class="row-action">
+                            <button class="row-btn">
+                                <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                                Превью
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Shortcuts -->
+            <div>
+                <div class="dash-section-title">Горячие клавиши</div>
+                <div class="shortcuts-grid">
+                    <div class="shortcut-row"><span>Поиск файлов</span><kbd>⌘ K</kbd></div>
+                    <div class="shortcut-row"><span>Копировать код</span><kbd>⌘ C</kbd></div>
+                    <div class="shortcut-row"><span>Следующая вкладка</span><kbd>⌘ →</kbd></div>
+                    <div class="shortcut-row"><span>Фокус поиска</span><kbd>⌘ F</kbd></div>
+                    <div class="shortcut-row"><span>Тема превью</span><kbd>⌘ T</kbd></div>
+                    <div class="shortcut-row"><span>Предыдущая вкладка</span><kbd>⌘ ←</kbd></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── CODE ─── -->
+        <div class="panel" id="codePanel">
+            <div class="code-toolbar">
+                <button class="toolbar-btn" id="copyBtn" onclick="copyCode()">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Копировать
+                </button>
+                <button class="toolbar-btn" onclick="downloadCode()">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Скачать
+                </button>
+                <span class="code-line-count" id="lineCount"></span>
+            </div>
+            <div class="code-wrap" id="codeWrap">
+                <div class="code-skeleton" id="codeSkeleton" style="display:none;">
+                    {% for i in range(14) %}<div class="skel-line" style="width:{{ [85,55,72,38,90,50,68,42,78,62,48,80,35,70][loop.index0] }}%;animation-delay:{{ loop.index0 * 0.05 }}s;"></div>{% endfor %}
+                </div>
+                <pre id="codeView"><code id="codeContent" class="hljs" style="background:transparent;">Выберите файл в боковой панели.</code></pre>
+            </div>
+        </div>
+
+        <!-- ─── PREVIEW ─── -->
+        <div class="panel" id="previewPanel">
+            <div class="preview-toolbar">
+                <select id="previewSelect">
+                    {% for f in html_files %}
+                    <option value="{{ f.split('/')[-1] }}">{{ f.split('/')[-1] }}</option>
+                    {% endfor %}
+                </select>
+                <button class="preview-run-btn" onclick="loadPreview()">
+                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Запустить
+                </button>
+                <div class="preview-sep"></div>
+                <div class="size-group">
+                    <button class="size-btn active" onclick="setSize('desktop',this)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        Desktop
+                    </button>
+                    <button class="size-btn" onclick="setSize('tablet',this)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        Tablet
+                    </button>
+                    <button class="size-btn" onclick="setSize('mobile',this)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        Mobile
+                    </button>
+                </div>
+                <button class="toolbar-btn" onclick="reloadPreview()" title="Обновить">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                </button>
+                <button class="toolbar-btn picker-btn" id="pickerBtn" onclick="togglePicker()" title="Выделить элемент">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+                    Выделить
+                </button>
+                <div class="preview-sep"></div>
+                <div class="preview-theme-group">
+                    <button class="size-btn active" id="themeDark" onclick="setPreviewTheme('dark',this)">🌙 Dark</button>
+                    <button class="size-btn" id="themeLight" onclick="setPreviewTheme('light',this)">☀️ Light</button>
+                </div>
+                <div class="css-status">
+                    <span></span> CSS подключён
+                </div>
+            </div>
+            <div class="css-chips" id="cssChips"></div>
+            <div class="preview-frame-wrap">
+                <iframe id="previewFrame" src="about:blank"></iframe>
+            </div>
+        </div>
+
+        <!-- ─── STATIC ─── -->
+        <div class="panel" id="staticPanel">
+            <div class="static-search">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" placeholder="Фильтр файлов..." id="assetSearch" oninput="filterAssets(this.value)">
+            </div>
+            <div id="assetsContainer">
+                {% set categories = {'Иконки меню': [], 'Логотипы': [], 'Фоны': [], 'Шрифты': [], 'Прочее': []} %}
+                {% for f in static_files %}
+                    {% set name = f.split('/')[-1].lower() %}
+                    {% set ext = name.split('.')[-1] %}
+                    {% if 'menu/' in f %} {% set _ = categories['Иконки меню'].append(f) %}
+                    {% elif 'logo' in name or 'favicon' in name %} {% set _ = categories['Логотипы'].append(f) %}
+                    {% elif 'wallpaper' in name or 'background' in name %} {% set _ = categories['Фоны'].append(f) %}
+                    {% elif ext in ['ttf','woff','woff2'] %} {% set _ = categories['Шрифты'].append(f) %}
+                    {% else %} {% set _ = categories['Прочее'].append(f) %}
+                    {% endif %}
+                {% endfor %}
+                {% for cat, files in categories.items() %}{% if files %}
+                <div class="cat-title">{{ cat }} ({{ files|length }})</div>
+                <div class="assets-grid">
+                    {% for f in files %}
+                    {% set ext = f.split('.')[-1].lower() %}
+                    <div class="asset-card" data-name="{{ f.split('/')[-1].lower() }}" style="animation-delay:{{ loop.index0 * 0.025 }}s;">
+                        {% if ext in ['png','jpg','jpeg','gif','svg'] %}
+                        <img src="/{{ f }}" alt="{{ f.split('/')[-1] }}" onerror="this.style.opacity='.15'">
+                        {% elif ext in ['ttf','woff','woff2'] %}
+                        <div class="asset-font-preview">Aa</div>
+                        {% endif %}
+                        <div class="asset-name">{{ f.split('/')[-1] }}</div>
+                        <button class="asset-copy-btn" onclick="copyPath('{{ f }}',this)">копировать</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}{% endfor %}
+            </div>
+        </div>
+
+        <!-- ─── CDN ─── -->
+        <div class="panel" id="cdnPanel">
+            <div class="cdn-header">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--t3);flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <input id="cdnBase" class="cdn-url-input" type="text" value="https://api.my1409.ru" oninput="renderCdn()" placeholder="https://api.my1409.ru">
+                <button class="toolbar-btn" onclick="copyAllCdn()">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Скопировать всё
+                </button>
+            </div>
+            <div id="cdnList" class="cdn-list"></div>
+        </div>
+
+    </div><!-- /panels -->
+</div><!-- /main-col -->
+
+<!-- CMD PALETTE -->
+<div id="cmdPalette" onclick="closeCmd(event)">
+    <div class="cmd-box">
+        <div class="cmd-input-wrap">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="cmdInput" placeholder="Поиск файлов и действий..." oninput="filterCmd(this.value)">
+        </div>
+        <div class="cmd-results" id="cmdResults"></div>
+    </div>
+</div>
+
+<!-- Status bar -->
+<footer class="statusbar">
+    <div class="sb-run"><div class="sb-run-dot"></div> Running</div>
+    <span class="statusbar-sep">|</span>
+    <span>localhost:9350</span>
+    <span class="statusbar-sep">|</span>
+    <span id="sbFile">no file</span>
+    <span class="statusbar-clock" id="sbClock"></span>
+</footer>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Element Picker Drawer -->
+<div id="pickerDrawer">
+    <div class="pd-header">
+        <span class="pd-title">ЭЛЕМЕНТ</span>
+        <span class="pd-path" id="pdPath">—</span>
+        <button class="pd-close" onclick="closePickerDrawer()">×</button>
+    </div>
+    <div class="pd-tabs">
+        <button class="pd-tab active" id="pdTabHtml" onclick="setPickerTab('html')">HTML</button>
+        <button class="pd-tab" id="pdTabCss"  onclick="setPickerTab('css')">CSS</button>
+        <div class="pd-tabs-right">
+            <button class="toolbar-btn" id="pdCopyBtn" onclick="copyPickerContent()">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Копировать
+            </button>
+        </div>
+    </div>
+    <div class="pd-body" id="pdBody">
+        <div class="pd-empty">
+            <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+            Нажми <strong style="color:var(--t1)">Выделить</strong>, затем кликни<br>на любой элемент в превью
+        </div>
+    </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────
+let currentFile = null;
+let currentCode = '';
+let wrapEnabled  = false;
+
+const allFiles = [
+    {% for f in css_files %}  { path:'{{ f }}', name:'{{ f.split("/")[-1] }}', type:'css'   },{% endfor %}
+    {% for f in html_files %} { path:'{{ f }}', name:'{{ f.split("/")[-1] }}', type:'html'  },{% endfor %}
+    {% for f in static_files %}{ path:'{{ f }}', name:'{{ f.split("/")[-1] }}', type:'asset' },{% endfor %}
+];
+
+// ─── TABS ────────────────────────────────────────────
+const TABS = ['welcome','code','preview','static','cdn'];
+
+function switchTab(tab) {
+    TABS.forEach(t => {
+        document.getElementById(t+'Panel').classList.remove('active');
+        document.getElementById('tab'+cap(t)).classList.remove('active');
+    });
+    document.getElementById(tab+'Panel').classList.add('active');
+    document.getElementById('tab'+cap(tab)).classList.add('active');
+}
+
+function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+
+// ─── SIDEBAR ─────────────────────────────────────────
+function setActiveSidebar(el) {
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    if (el) el.classList.add('active');
+}
+
+function filterSidebar(q) {
+    const lq = q.toLowerCase();
+    document.querySelectorAll('.sb-item[data-name]').forEach(item => {
+        const name = item.dataset.name?.toLowerCase() || '';
+        item.style.display = name.includes(lq) ? '' : 'none';
+    });
+}
+
+// ─── LOAD CODE ───────────────────────────────────────
+async function loadCode(path, el) {
+    setActiveSidebar(el);
+    switchTab('code');
+    currentFile = path;
+    document.getElementById('breadcrumbPath').textContent = path.replace('static/', '');
+    document.getElementById('sbFile').textContent = path.split('/').pop();
+
+    document.getElementById('codeSkeleton').style.display = 'flex';
+    document.getElementById('codeView').style.opacity = '0';
+
+    try {
+        const res  = await fetch('/api/file-content?path=' + encodeURIComponent(path));
+        const data = await res.json();
+        currentCode = data.content;
+
+        const ext  = path.split('.').pop();
+        const lang = { css:'css', html:'xml', js:'javascript' }[ext] || 'plaintext';
+
+        const codeEl = document.getElementById('codeContent');
+        codeEl.textContent = currentCode;
+        codeEl.className = `language-${lang}`;
+        if (window.hljs) hljs.highlightElement(codeEl);
+
+        document.getElementById('lineCount').textContent = currentCode.split('\n').length + ' строк';
+        document.getElementById('codeSkeleton').style.display = 'none';
+        document.getElementById('codeView').style.opacity = '1';
+        document.getElementById('codeView').style.transition = 'opacity .25s';
+    } catch {
+        document.getElementById('codeSkeleton').style.display = 'none';
+        document.getElementById('codeContent').textContent = 'Ошибка загрузки';
+    }
+}
+
+function copyCode() {
+    if (!currentCode) return;
+    navigator.clipboard.writeText(currentCode).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Скопировано!`;
+        showToast('✅ Код скопирован');
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Копировать`;
+        }, 2000);
+    });
+}
+
+function downloadCode() {
+    if (!currentFile || !currentCode) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([currentCode], { type:'text/plain' }));
+    a.download = currentFile.split('/').pop();
+    a.click();
+    showToast('⬇️ Скачан: ' + a.download);
+}
+
+function toggleWrap() {
+    wrapEnabled = !wrapEnabled;
+    const code = document.querySelector('#codeView code');
+    if (code) code.style.whiteSpace = wrapEnabled ? 'pre-wrap' : 'pre';
+    document.getElementById('wrapToggle').style.color = wrapEnabled ? 'var(--accent-text)' : '';
+}
+
+// ─── PREVIEW ─────────────────────────────────────────
+const SIZES = {
+    desktop: { w:'100%',  h:'100%'  },
+    tablet:  { w:'768px', h:'720px' },
+    mobile:  { w:'390px', h:'720px' },
+};
+
+function setSize(size, btn) {
+    const { w, h } = SIZES[size];
+    const frame = document.getElementById('previewFrame');
+    frame.style.width = w; frame.style.height = h;
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+const SDK_CSS = {{ css_files|tojson }};
+
+let previewTheme = 'dark';
+
+function renderCssChips() {
+    const wrap = document.getElementById('cssChips');
+    wrap.innerHTML = SDK_CSS.map(f => `<span class="css-chip">${f.split('/').pop()}</span>`).join('');
+}
+
+async function injectCssIntoFrame(frame) {
+    await new Promise(r => { frame.onload = r; });
+    const doc = frame.contentDocument;
+    if (!doc) return;
+    doc.documentElement.setAttribute('data-theme', previewTheme);
+    for (const href of SDK_CSS) {
+        if (doc.querySelector(`link[href="${href}"]`)) continue;
+        const link = doc.createElement('link');
+        link.rel = 'stylesheet'; link.href = '/' + href;
+        doc.head.appendChild(link);
+    }
+    if (!doc.querySelector('script[src*="lucide"]')) {
+        const s = doc.createElement('script');
+        s.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.js';
+        s.onload = () => { try { doc.defaultView.lucide.createIcons(); } catch {} };
+        doc.head.appendChild(s);
+    }
+}
+
+function loadComponent(name, el) {
+    if (el) setActiveSidebar(el);
+    switchTab('preview');
+    document.getElementById('previewSelect').value = name;
+    document.getElementById('breadcrumbPath').textContent = 'components/' + name;
+    document.getElementById('sbFile').textContent = name;
+    renderCssChips();
+    const frame = document.getElementById('previewFrame');
+    frame.src = '/preview/' + encodeURIComponent(name);
+    injectCssIntoFrame(frame).then(() => showToast('👁 Превью: ' + name));
+}
+
+function loadPreview() { loadComponent(document.getElementById('previewSelect').value, null); }
+function reloadPreview() { loadComponent(document.getElementById('previewSelect').value, null); }
+
+function setPreviewTheme(theme, btn) {
+    previewTheme = theme;
+    document.querySelectorAll('#themeDark, #themeLight').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    try { document.getElementById('previewFrame').contentDocument?.documentElement?.setAttribute('data-theme', theme); } catch {}
+    showToast(theme === 'dark' ? '🌙 Dark' : '☀️ Light');
+}
+
+// ─── STATIC ──────────────────────────────────────────
+function showStaticPanel(el) {
+    if (el) setActiveSidebar(el);
+    switchTab('static');
+    document.getElementById('breadcrumbPath').textContent = 'Static файлы';
+}
+
+function filterAssets(q) {
+    const lq = q.toLowerCase();
+    document.querySelectorAll('.asset-card').forEach(card => {
+        card.style.display = (card.dataset.name||'').includes(lq) ? '' : 'none';
+    });
+}
+
+function copyPath(path, btn) {
+    const text = '/static/' + path.replace(/^static\//, '');
+    navigator.clipboard.writeText(text).then(() => {
+        if (btn) { btn.textContent = '✓'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'копировать'; btn.classList.remove('copied'); }, 2000); }
+        showToast('📋 ' + text);
+    });
+}
+
+// ─── CDN ─────────────────────────────────────────────
+const CDN_CSS_FILES    = {{ css_files | tojson }};
+const CDN_STATIC_FILES = {{ static_files | tojson }};
+
+function cdnUrl(base, path) { return base.replace(/\/$/, '') + '/' + path; }
+
+function cdnSnippet(base, path) {
+    const url = cdnUrl(base, path);
+    const ext = path.split('.').pop().toLowerCase();
+    if (ext === 'css') return `<link rel="stylesheet" href="${url}">`;
+    if (['ttf','woff','woff2'].includes(ext)) return `/* font: ${url} */`;
+    return `<img src="${url}" alt="${path.split('/').pop()}">`;
+}
+
+function renderCdn() {
+    const base = (document.getElementById('cdnBase').value||'').trim() || 'https://api.my1409.ru';
+    const list = document.getElementById('cdnList');
+    const sections = [
+        { title: 'CSS — подключить через <link rel="stylesheet">', files: CDN_CSS_FILES },
+        { title: 'Static — изображения и ресурсы', files: CDN_STATIC_FILES },
+    ];
+    list.innerHTML = sections.map(sec => `
+        <div class="cdn-group-title">${sec.title}</div>
+        ${sec.files.map(f => {
+            const snippet = cdnSnippet(base, f);
+            return `<div class="cdn-row">
+                <div class="cdn-row-top">
+                    <span class="cdn-row-path">${f}</span>
+                    <button class="cdn-copy-btn" onclick="copyCdnRow('${snippet.replace(/'/g,"\\'")}', this)">копировать</button>
+                </div>
+                <div class="cdn-snippet">${snippet.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+            </div>`;
+        }).join('')}
+    `).join('');
+}
+
+function copyCdnRow(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ готово'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'копировать'; btn.classList.remove('copied'); }, 2000);
+    });
+}
+
+function copyAllCdn() {
+    const base = (document.getElementById('cdnBase').value||'').trim() || 'https://api.my1409.ru';
+    const lines = ['<!-- 1409 SDK CSS -->', ...CDN_CSS_FILES.map(f => cdnSnippet(base, f))];
+    navigator.clipboard.writeText(lines.join('\n')).then(() => showToast('📋 Все CSS ссылки скопированы'));
+}
+
+// ─── CMD PALETTE ─────────────────────────────────────
+let cmdSelected = 0, cmdFiltered = [];
+const typeIcon  = { css:'🎨', html:'🧩', asset:'🖼️' };
+const typeLabel = { css:'CSS', html:'HTML', asset:'Static' };
+
+function openCmd() {
+    document.getElementById('cmdPalette').classList.add('open');
+    document.getElementById('cmdInput').value = '';
+    document.getElementById('cmdInput').focus();
+    filterCmd('');
+}
+function closeCmd(e) { if (e.target === document.getElementById('cmdPalette')) closeCmdForce(); }
+function closeCmdForce() { document.getElementById('cmdPalette').classList.remove('open'); }
+
+function filterCmd(q) {
+    const lq = q.toLowerCase();
+    cmdFiltered = allFiles.filter(f => f.name.toLowerCase().includes(lq)).slice(0, 18);
+    cmdSelected = 0;
+    renderCmd();
+}
+
+function renderCmd() {
+    const el = document.getElementById('cmdResults');
+    if (!cmdFiltered.length) {
+        el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t3);font-size:.82rem;">Ничего не найдено</div>';
+        return;
+    }
+    el.innerHTML = cmdFiltered.map((f, i) => `
+        <div class="cmd-item ${i===cmdSelected?'selected':''}" onclick="cmdOpen(${i})">
+            <div class="cmd-icon">${typeIcon[f.type]}</div>
+            <div class="cmd-label">${f.name}</div>
+            <span class="cmd-type">${typeLabel[f.type]}</span>
+        </div>`).join('');
+}
+
+function cmdOpen(idx) {
+    const f = cmdFiltered[idx]; if (!f) return;
+    closeCmdForce();
+    if (f.type==='css')        loadCode(f.path, null);
+    else if (f.type==='html')  loadComponent(f.name, null);
+    else { showStaticPanel(null); setTimeout(() => { document.getElementById('assetSearch').value = f.name; filterAssets(f.name); }, 100); }
+}
+
+// ─── KEYBOARD ────────────────────────────────────────
+document.addEventListener('keydown', e => {
+    const meta    = e.metaKey || e.ctrlKey;
+    const palette = document.getElementById('cmdPalette').classList.contains('open');
+
+    if (palette) {
+        if (e.key==='Escape')    { closeCmdForce(); e.preventDefault(); }
+        if (e.key==='ArrowDown') { cmdSelected = Math.min(cmdSelected+1, cmdFiltered.length-1); renderCmd(); e.preventDefault(); }
+        if (e.key==='ArrowUp')   { cmdSelected = Math.max(cmdSelected-1, 0); renderCmd(); e.preventDefault(); }
+        if (e.key==='Enter')     { cmdOpen(cmdSelected); e.preventDefault(); }
+        return;
+    }
+
+    if (meta && e.key==='k') { openCmd(); e.preventDefault(); }
+    if (meta && e.key==='c' && currentCode) { copyCode(); e.preventDefault(); }
+    if (meta && e.key==='f') { document.getElementById('globalSearch').focus(); e.preventDefault(); }
+    if (meta && e.key==='t') {
+        const light = document.getElementById('previewFrame').contentDocument?.documentElement?.getAttribute('data-theme') !== 'light';
+        setPreviewTheme(light?'light':'dark', document.getElementById(light?'themeLight':'themeDark'));
+        e.preventDefault();
+    }
+    if (meta && e.key==='ArrowRight') {
+        const cur = TABS.find(t => document.getElementById(t+'Panel').classList.contains('active'));
+        switchTab(TABS[(TABS.indexOf(cur)+1) % TABS.length]); e.preventDefault();
+    }
+    if (meta && e.key==='ArrowLeft') {
+        const cur = TABS.find(t => document.getElementById(t+'Panel').classList.contains('active'));
+        switchTab(TABS[(TABS.indexOf(cur)-1+TABS.length) % TABS.length]); e.preventDefault();
+    }
+});
+
+// ─── TOAST ───────────────────────────────────────────
+let toastTimer;
+function showToast(msg, dur=2400) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('shown');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('shown'), dur);
+}
+
+// ─── CLOCK ───────────────────────────────────────────
+function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const el = document.getElementById('sbClock');
+    if (el) el.textContent = `${h}:${m}:${s}`;
+}
+updateClock(); setInterval(updateClock, 1000);
+
+// ─── ANIMATED COUNTERS ───────────────────────────────
+function animateCount(el, target, dur=700) {
+    const start = performance.now();
+    (function step(ts) {
+        const p = Math.min((ts-start)/dur, 1);
+        el.textContent = Math.round((1 - Math.pow(1-p, 3)) * target);
+        if (p < 1) requestAnimationFrame(step);
+    })(performance.now());
+}
+document.querySelectorAll('.stat-val[data-count]').forEach(el => {
+    animateCount(el, parseInt(el.dataset.count, 10));
+});
+
+// ─── SIDEBAR STAGGER ─────────────────────────────────
+document.querySelectorAll('.sb-item').forEach((item, i) => {
+    item.style.animation = `none`;
+    item.style.opacity = '0';
+    setTimeout(() => {
+        item.style.transition = 'opacity .25s ease, transform .25s ease';
+        item.style.opacity = '1';
+        item.style.transform = 'translateX(0)';
+    }, 40 + i * 28);
+});
+
+// ─── ELEMENT PICKER ──────────────────────────────────
+let pickerMode = false;
+window._pickerData = null;
+
+function togglePicker() {
+    const frame = document.getElementById('previewFrame');
+    if (!frame.src || frame.src === 'about:blank') {
+        showToast('⚠️ Сначала загрузи превью'); return;
+    }
+    pickerMode = !pickerMode;
+    document.getElementById('pickerBtn').classList.toggle('active', pickerMode);
+    try { frame.contentWindow.postMessage({type: pickerMode ? 'enablePicker' : 'disablePicker'}, '*'); } catch {}
+    if (pickerMode) showToast('🎯 Кликни на элемент в превью');
+    else closePickerDrawer();
+}
+
+window.addEventListener('message', e => {
+    if (e.data?.type !== 'pickedElement') return;
+    pickerMode = false;
+    document.getElementById('pickerBtn').classList.remove('active');
+    window._pickerData = e.data;
+    document.getElementById('pickerDrawer').classList.add('open');
+    document.getElementById('pdPath').textContent = e.data.path || e.data.tag;
+    document.getElementById('pdTabHtml').classList.add('active');
+    document.getElementById('pdTabCss').classList.remove('active');
+    renderPickerContent('html');
+});
+
+function closePickerDrawer() {
+    document.getElementById('pickerDrawer').classList.remove('open');
+    if (pickerMode) {
+        pickerMode = false;
+        document.getElementById('pickerBtn').classList.remove('active');
+        try { document.getElementById('previewFrame').contentWindow.postMessage({type:'disablePicker'}, '*'); } catch {}
+    }
+}
+
+function setPickerTab(tab) {
+    document.querySelectorAll('.pd-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('pdTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    renderPickerContent(tab);
+}
+
+function renderPickerContent(tab) {
+    if (!window._pickerData) return;
+    const content = tab === 'html' ? window._pickerData.html : window._pickerData.css;
+    const lang    = tab === 'html' ? 'xml' : 'css';
+    const body    = document.getElementById('pdBody');
+    body.innerHTML = `<pre><code class="language-${lang}"></code></pre>`;
+    const codeEl  = body.querySelector('code');
+    codeEl.textContent = content || '';
+    if (window.hljs) hljs.highlightElement(codeEl);
+}
+
+function copyPickerContent() {
+    const tab = document.querySelector('.pd-tab.active')?.id === 'pdTabCss' ? 'css' : 'html';
+    const content = tab === 'html' ? window._pickerData?.html : window._pickerData?.css;
+    if (!content) return;
+    navigator.clipboard.writeText(content).then(() => {
+        const btn = document.getElementById('pdCopyBtn');
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Скопировано!`;
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Копировать`;
+        }, 2000);
+        showToast('📋 Скопировано');
+    });
+}
+
+// ─── INIT LUCIDE ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+});
+window.addEventListener('load', () => {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+    }
+});
+</script>
+</body>
+</html>

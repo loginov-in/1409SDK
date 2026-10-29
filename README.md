@@ -7,15 +7,17 @@
 
 ```
 1409SDK/
-├── main.py             # Точка входа
+├── main.py                  # Flask-сервер, авторизация и API панели
 ├── static/
-│   ├── fonts/          # Шрифты дизайн-системы
-│   ├── images/         # Изображения и иконки
+│   ├── css/                 # CSS-модули дизайн-системы
+│   ├── fonts/               # Шрифты дизайн-системы
+│   ├── images/              # Изображения и иконки
 │   └── js/
-│       └── style.js    # Общие скрипты и стили
+│       └── style.js         # Общие скрипты
 ├── templates/
-│   ├── login.html      # Шаблон страницы входа
-│   └── panel.html      # Шаблон панели управления
+│   ├── login.html           # Страница входа
+│   ├── panel.html           # Панель управления SDK
+│   └── components/          # HTML-компоненты для превью
 ├── .gitignore
 └── README.md
 ```
@@ -39,6 +41,14 @@ source .venv/bin/activate
 
 ```bash
 python main.py
+```
+
+Панель доступна на http://localhost:9350. Учётные данные и ключ сессий хранятся в `.env` (файл в `.gitignore`, в репозиторий не попадает):
+
+```env
+SECRET_KEY=...
+ADMIN_LOGIN=admin
+ADMIN_PASSWORD=...
 ```
 
 ## Разработка
